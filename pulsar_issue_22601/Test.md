@@ -18,6 +18,8 @@ bin/pulsar initialize-cluster-metadata \
 ```
 - bin/pulsar-daemon  start zookeeper
 ### Enable bookkeeper TLS
+prepare all TLS certificate and keys.
+
 #### conf/bookkeeper.conf
 ```text
 # TLS Provider (JDK or OpenSSL).
@@ -75,6 +77,8 @@ bookkeeperTLSCertificateFilePath=
 # Path for the trusted TLS certificate file
 bookkeeperTLSTrustCertsFilePath=conf/truststore.jks
 ```
+- bin/pulsar-daemon  start bookie 
+- bin/pulsar-daemon  start broker 
 
 ### Change pulsar-testclient
 Build pulsar-testclient.jar from https://github.com/semistone/pulsar/tree/debug_ssues_22601
@@ -84,9 +88,9 @@ Replace pulsar-testclient.jar in lib/org.apache.pulsar-pulsar-testclient-3.2.2.j
 
 
 ### Run Test
-consume 10 consumers
+Start 10 consumers
 wait consumer started, then
-produce 6000 qps , payload 2k, 2% 20k no batch mode.
+Start Producer to produce 6000 qps , payload 2k, 2% 20k no batch mode.
 
 - bin/pulsar-perf  consume  persistent://public/default/my-topic  -n 10 -sp Latest -ss angus_test    -st Key_Shared
 - bin/pulsar-perf  produce persistent://public/default/my-topic -r 6000 -s 2000 -bp 2    -db   -b 1
@@ -132,6 +136,7 @@ Print corrupt data in AbstractBaseDispatcher.java
 139                 msgMetadata = ((EntryAndMetadata) entry).getMetadata();
 140             } else {
 141                 msgMetadata = Commands.peekAndCopyMessageMetadata(metadataAndPayload, subscription.toString(), -1);
+                    // print payload when error happen
 142                 if (msgMetadata == null) {
 143                    log.warn("null meta data ledger {} entry {} data is {}", entry.getLedgerId(), entry.getEntryId(), Base64.encode(entry.getData()));
 144                 }
@@ -140,7 +145,7 @@ Print corrupt data in AbstractBaseDispatcher.java
 ```
 So we confirmed data was corrupted.
 
-#### Check when data corrupt happen
+#### Check when does data corrupt happen
 
 We could use 
 ```java
