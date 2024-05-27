@@ -22,6 +22,13 @@ bin/pulsar initialize-cluster-metadata \
 ### Enable bookkeeper TLS
 prepare all TLS certificate and keys.
 [Create tls keystore](https://pulsar.apache.org/docs/2.10.x/security-tls-keystore/)
+
+- ca script [ca](ca.sh) create and generate truststore
+- update [bookkeeper.conf](bookkeeper.conf) ip address
+- script to generate [keystore and import into truststore](gen.sh) 
+- My standalone [config.tgz](https://rak.box.com/s/unn0l7680tl8ndza39d1pqyp8te94a3k)
+
+```
 #### conf/bookkeeper.conf
 ```text
 # TLS Provider (JDK or OpenSSL).
@@ -70,6 +77,7 @@ bookkeeperTLSKeyStorePasswordPath=conf/.pass
 # Path to file containing truststore password, if the client truststore is password protected.
 bookkeeperTLSTrustStorePasswordPath=conf/.pass
 
+openssl pkcs8 -topk8 -inform PEM -outform PEM -in bookkeeper.key.pem -out bookkeeper.key-pk8.pem -nocrypt
 # Path for the TLS private key file
 bookkeeperTLSKeyFilePath=conf/keystore.jks
 
