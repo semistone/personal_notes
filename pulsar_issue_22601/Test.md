@@ -2,6 +2,8 @@
 
 [Issue 22601](https://github.com/apache/pulsar/issues/22601)
 
+
+
 ### Start single node cluster
 
 - Download and extract apache-pulsar-3.2.2-bin.tar.gz
@@ -19,7 +21,7 @@ bin/pulsar initialize-cluster-metadata \
 - bin/pulsar-daemon  start zookeeper
 ### Enable bookkeeper TLS
 prepare all TLS certificate and keys.
-
+[Create tls keystore](https://pulsar.apache.org/docs/2.10.x/security-tls-keystore/)
 #### conf/bookkeeper.conf
 ```text
 # TLS Provider (JDK or OpenSSL).
@@ -159,8 +161,8 @@ and found it start to happen in OpAddEntry.java
             // Avoid caching entries if no cursor has been created
             debug.append("run create entry;");
             EntryImpl entry = EntryImpl.create(ledgerId, entryId, data);
-            if (!Commands.hasChecksum(data)) {
-               log.warn("no checksum {}", debug.toString()); <==== from here
+            if (!Commands.hasChecksum(data)) { // <==== from here
+               log.warn("no checksum {}", debug.toString()); 
             }
             debug = new StringBuilder();
             // EntryCache.insert: duplicates entry by allocating new entry and data. so, recycle entry after calling
@@ -238,6 +240,6 @@ buf release java.lang.Exception
 - run create entry in EntryImpl entry = EntryImpl.create(ledgerId, entryId, data);
 - data corrupted.
 
-After discuss with Lari Hotari, seem he found the root cause.
+After discussing with Lari Hotari, seem he found the root cause.
 
 
