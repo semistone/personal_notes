@@ -194,6 +194,18 @@ during try and error, I found when replace OpAddEntry.data
 ```
 then that error disappear but I still don't known why.
 
+Feedback from Lari Hotari
+```text
+The reason why it happens to fix the issue is that .asReadOnly() contains a bug. netty/netty#14075 (will be fixed in Netty 4.1.111).
+Because of the bug, the buffer is never released. Since it seems to fix the issue, it means that there are buffer reference count issues. Most likely the .asReadOnly() usage would cause a memory leak.
+
+There are also other Netty bugs impacting the use case. There are 4 PRs that will be in 4.1.111 . Before that, it might be able to find workarounds. Since the workarounds would be temporary, it could be useful to do a local build using 4.1.111-SNAPSHOT version.
+
+In addition, the fixes pending for Bookkeeper 4.16.6 will be needed to fix the problem.
+It would be useful to build BK from branch-4.16 and use 4.16.6-SNAPSHOT version.
+
+It's possible that the issue remains after this since multiple issues in different libraries are contributing to the problem.
+```
 
 #### Trace data
 because OpAddEntry.data is similar to private fields, so I collect debug log
